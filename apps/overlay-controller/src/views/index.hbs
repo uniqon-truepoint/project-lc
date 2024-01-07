@@ -33,9 +33,17 @@
     </script>
   </head>
   <body>
-    <div style='width:100%;display:flex;justify-content:flex-end'>
-      <button class='logout-button' style='background-color:red'>로그아웃</button>
-    </div>
+    <header style='width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;'>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="/" class="link" style="margin-right:8px;">
+          <h1>Overlay Controller</h1>
+        </a>
+        <a href="/api-docs" class="link"><p>API OverlayController Docs</p></a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class='logout-button' style='background-color:red'>로그아웃</button>
+      </div>
+    </header>
     <div class='upper-area'>
       <div class='search-box'>
         <table class='display compact' id='liveshopping-table'>

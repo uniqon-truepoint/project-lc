@@ -1,13 +1,15 @@
 import { Body, Controller, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
+import { AuthService, LoginHistoryService } from '@project-lc/nest-modules-auth';
 import {
+  AdminGuard,
   JwtAuthGuard,
   LocalAuthGuard,
-  AdminGuard,
 } from '@project-lc/nest-modules-authguard';
 import { loginUserRes, UserType } from '@project-lc/shared-types';
 import { Request, Response } from 'express';
-import { AuthService, LoginHistoryService } from '@project-lc/nest-modules-auth';
 
+@ApiExcludeController()
 @Controller('auth')
 export class AuthController {
   constructor(

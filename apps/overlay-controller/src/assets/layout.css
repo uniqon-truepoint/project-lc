@@ -4,6 +4,18 @@ body {
   background-color: #f2f2f2;
 }
 
+a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+a:focus,
+a:hover {
+  outline: dotted;
+  outline-width: thin;
+  color: blue;
+}
+
 div.search-box {
   width: 70%;
   height: 30%;

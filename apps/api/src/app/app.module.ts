@@ -59,7 +59,7 @@ import { AppController } from './app.controller';
     ConfigModule.forRoot({ isGlobal: true, validationSchema }),
     CacheModule.registerAsync({ isGlobal: true, useClass: CacheConfig }),
     MailerModule.forRoot(mailerConfig),
-    AuthModule,
+    AuthModule.withControllers(),
     PrismaModule,
     SocialModule,
     ShippingGroupModule,

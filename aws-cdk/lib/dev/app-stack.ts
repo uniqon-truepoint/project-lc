@@ -52,6 +52,7 @@ export class LCDevAppStack extends Stack {
   private CACHE_REDIS_URL: ssm.IStringParameter;
   private MQ_REDIS_URL: ssm.IStringParameter;
   private TOSS_PAYMENTS_SECRET_KEY: ssm.IStringParameter;
+  private SERVER_API_KEY: ssm.IStringParameter;
 
   public readonly alb: elbv2.ApplicationLoadBalancer;
   public readonly cluster: ecs.Cluster;
@@ -286,6 +287,8 @@ export class LCDevAppStack extends Stack {
         AWS_S3_ACCESS_KEY_ID: ecs.Secret.fromSsmParameter(this.S3_ACCESS_KEY_ID),
         AWS_S3_ACCESS_KEY_SECRET: ecs.Secret.fromSsmParameter(this.S3_ACCESS_KEY_SECRET),
         CACHE_REDIS_URL: ecs.Secret.fromSsmParameter(this.CACHE_REDIS_URL),
+        MQ_REDIS_URL: ecs.Secret.fromSsmParameter(this.MQ_REDIS_URL),
+        SERVER_API_KEY: ecs.Secret.fromSsmParameter(this.SERVER_API_KEY),
       },
       environment: {
         S3_BUCKET_NAME: 'project-lc-dev-test',
@@ -697,6 +700,12 @@ export class LCDevAppStack extends Stack {
         { parameterName: constants.DEV.TOSS_PAYMENTS_SECRET_KEY },
       );
 
+    this.SERVER_API_KEY = ssm.StringParameter.fromSecureStringParameterAttributes(
+      this,
+      `${PREFIX}OVERLAY_CONTROLLER/DEV/SERVER_API_KEY`,
+      { parameterName: constants.DEV.SERVER_API_KEY },
+    );
+
     return {
       DATABASE_URL: this.DBURL_PARAMETER,
       FIRSTMALL_DATABASE_URL: this.FIRSTMALL_DATABASE_URL,
@@ -719,6 +728,7 @@ export class LCDevAppStack extends Stack {
       CACHE_REDIS_URL: this.CACHE_REDIS_URL,
       MQ_REDIS_URL: this.MQ_REDIS_URL,
       TOSS_PAYMENTS_SECRET_KEY: this.TOSS_PAYMENTS_SECRET_KEY,
+      SERVER_API_KEY: this.SERVER_API_KEY,
     };
   }
 }

@@ -43,8 +43,8 @@
           "value": "https://realtime.xn--hp4b17xa.com"
         },
         {
-            "name": "NODE_ENV",
-            "value": "production"
+          "name": "NODE_ENV",
+          "value": "production"
         }
       ],
       "resourceRequirements": null,
@@ -96,6 +96,14 @@
         {
           "valueFrom": "arn:aws:ssm:ap-northeast-2:803609402610:parameter/PROJECT_LC_CACHE_REDIS_URL",
           "name": "CACHE_REDIS_URL"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-northeast-2:803609402610:parameter/PROJECT_LC/OVERLAY_CONTROLLER/SERVER_API_KEY",
+          "name": "SERVER_API_KEY"
+        },
+        {
+          "name": "MQ_REDIS_URL",
+          "valueFrom": "arn:aws:ssm:ap-northeast-2:803609402610:parameter/PROJECT_LC_MQ_REDIS_URL"
         }
       ],
       "dockerSecurityOptions": [],
@@ -128,9 +136,7 @@
   "taskRoleArn": null,
   "family": "project-lc-overlay-controller",
   "pidMode": null,
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
+  "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
   "cpu": "256",
   "inferenceAccelerators": null,

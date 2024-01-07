@@ -1,11 +1,8 @@
-import { BadRequestException, Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BroadcasterService } from '@project-lc/nest-modules-broadcaster';
 import { LiveShoppingService } from '@project-lc/nest-modules-liveshopping';
-import { PurchaseMessage } from '@project-lc/shared-types';
 import { Request, Response } from 'express';
-import { OverlayMessageGateway } from './overlay.message.gateway';
 import { OverlayService } from './overlay.service';
 
 interface ImagesLengthAndUserId {
@@ -21,10 +18,12 @@ export class OverlayController {
     private readonly broadcasterService: BroadcasterService,
     private readonly liveShoppingService: LiveShoppingService,
     private readonly configService: ConfigService,
-    private readonly overlayMessageGateway: OverlayMessageGateway,
   ) {}
 
-  // 오버레이 렌더링 시 필요한 정보들 받아오고, hbs로 넘겨줌
+  /**
+   * 라이브 쇼핑 오버레이 렌더링 페이지
+   * 오버레이 렌더링 시 필요한 정보들 받아오고, hbs로 넘겨줌
+   * */
   @Get([':id', '/nsl/:id'])
   async getRender(
     @Param('id') id: string,
@@ -60,22 +59,26 @@ export class OverlayController {
       }
       return data;
     } catch {
-      throw new BadRequestException(`user ${id} not found`);
+      res.render('404');
+      return {
+        verticalImagesLength: 0,
+        email: '',
+        liveShoppingId: { id: 0 },
+      };
     }
   }
 
-  // API -> 마이크로서비스 -> Overlay 구매메시지 핸들러
-  @MessagePattern('liveshopping:overlay:purchase-msg')
-  public async handlePurchaseMsg(@Payload() purchase: PurchaseMessage): Promise<void> {
-    if (purchase.simpleMessageFlag) {
-      return this.overlayService.handleSimplePurchaseMessage(
-        purchase,
-        this.overlayMessageGateway.server,
-      );
-    }
-    return this.overlayService.handlePurchaseMessage(
-      purchase,
-      this.overlayMessageGateway.server,
-    );
+  /**
+   * 상시 구매메시지 도네이션 오버레이 렌더링 페이지
+   */
+  @Get(':id/donation')
+  async render(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<any> {
+    const data = { id };
+    res.render('normal-donation', data);
+    return data;
   }
 }

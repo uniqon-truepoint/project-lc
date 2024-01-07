@@ -3,6 +3,7 @@ import { BroadcasterModule } from '@project-lc/nest-modules-broadcaster';
 import { LiveShoppingModule } from '@project-lc/nest-modules-liveshopping';
 import { OverlayController } from './overlay.controller';
 import { OverlayGateway } from './overlay.gateway';
+import { OverlayHandler } from './overlay.handler';
 import { OverlayMessageGateway } from './overlay.message.gateway';
 import { OverlayScreenGateway } from './overlay.screen.gateway';
 import { OverlayService } from './overlay.service';
@@ -19,6 +20,6 @@ import { OverlayService } from './overlay.service';
     OverlayService,
   ],
   exports: [OverlayService, OverlayGateway, OverlayScreenGateway, OverlayMessageGateway],
-  controllers: [OverlayController],
+  controllers: [OverlayController, OverlayHandler],
 })
 export class OverlayModule {}

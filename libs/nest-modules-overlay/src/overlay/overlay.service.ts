@@ -17,6 +17,7 @@ import { throwError } from 'rxjs';
 import { s3 } from '@project-lc/utils-s3';
 import { Server } from 'socket.io';
 import { TtsSetting } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OverlayService {
@@ -31,7 +32,10 @@ export class OverlayService {
     'only_message',
   ];
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {
     this.privateKey =
       process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY?.replace(/\\n/g, '\n') || '';
 
@@ -45,13 +49,14 @@ export class OverlayService {
 
   // 응원메세지 tts 변환
   async googleTextToSpeech(
-    purchaseData: PurchaseMessage,
+    purchaseData: Pick<
+      PurchaseMessage,
+      'nickname' | 'ttsSetting' | 'purchaseNum' | 'message'
+    >,
   ): Promise<string | false | Uint8Array> {
     const client = new textToSpeech.TextToSpeechClient(this.options);
-    const { nickname } = purchaseData;
-    const { ttsSetting } = purchaseData;
-    const price = purchaseData.purchaseNum;
-    const { message } = purchaseData;
+    const { nickname, message, ttsSetting, purchaseNum } = purchaseData;
+    const price = purchaseNum;
     let messageWithAppreciate: string;
 
     switch (ttsSetting) {
@@ -59,7 +64,7 @@ export class OverlayService {
       case 'full':
         messageWithAppreciate = `
         <speak>
-          ${nickname}님 ${price}원 구매 감사합니다 <break time='500ms'/> 
+          ${nickname}님 ${price}원 구매 감사합니다 <break time='500ms'/>
           ${message}
         </speak>
         `;
@@ -120,7 +125,7 @@ export class OverlayService {
   public async handlePurchaseMessage(
     purchase: PurchaseMessage,
     socketServer: Server,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const {
       roomName: overlayUrl,
       ttsSetting,
@@ -145,7 +150,7 @@ export class OverlayService {
       audioBuffer = await this.googleTextToSpeech(purchase);
     }
 
-    /** 총 금액 오버레이에 띄울 때 필요 현재는 사용안함 
+    /** 총 금액 오버레이에 띄울 때 필요 현재는 사용안함
     const totalSold = await this.overlayService.getTotalSoldPrice();
     */
 
@@ -186,19 +191,51 @@ export class OverlayService {
       nickname: purchase.nickname,
       price: purchase.purchaseNum,
     });
+    return true;
   }
 
   /** 구매 메시지(비회원) 송출 핸들러 (overlay client 화면으로 송출 이벤트 전달) */
   public async handleSimplePurchaseMessage(
-    purchase: PurchaseMessage,
+    purchase: Pick<
+      PurchaseMessage,
+      'roomName' | 'nickname' | 'productName' | 'purchaseNum'
+    >,
     socketServer: Server,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { roomName } = purchase;
     socketServer.to(roomName).emit('get non client purchase message', purchase);
     socketServer.to(roomName).emit('get nsl donation message from server', {
       nickname: purchase.nickname,
       price: purchase.purchaseNum,
     });
+    return true;
+  }
+
+  /** (상시)일반 구매 메시지 송출 */
+  public async handleNormalPurchaseMessage(
+    purchase: NormalPurchaseMessagePayload,
+    socketServer: Server,
+  ): Promise<boolean> {
+    const { broadcasterEmail, ttsSetting } = purchase;
+    this.logger.debug(`handleNormalPurchaseMessage: ${JSON.stringify(purchase)}`);
+    // 방송인 도네이션 이미지 조회
+    const imageSrc = await this.getBcDonationImageSrc(broadcasterEmail);
+    let audioBuffer: string | false | Uint8Array;
+    if (this.ENABLE_TTS_TYPES.includes(ttsSetting)) {
+      audioBuffer = await this.googleTextToSpeech(purchase);
+    }
+    // 화면 송출 이벤트 발행
+    socketServer.to(broadcasterEmail).emit('show-normal-purchase-message', {
+      purchase,
+      audioBuffer,
+      imageSrc,
+    });
+    return true;
+  }
+
+  /** 방송인 도네이션알림 이미지src 조회 */
+  private async getBcDonationImageSrc(broadcasterEmail: string): Promise<string> {
+    return `${s3.bucketDomain}donation-images/${broadcasterEmail}/normal/donation-1`;
   }
 
   // 방송 시작 알림
@@ -382,4 +419,15 @@ export class OverlayService {
       },
     });
   }
+}
+
+export class NormalPurchaseMessagePayload {
+  message: string;
+  nickname: string;
+  purchaseNum: number;
+  productName?: string;
+  giftFlag?: boolean;
+  simpleMessageFlag?: boolean;
+  ttsSetting: TtsSetting;
+  broadcasterEmail: string;
 }

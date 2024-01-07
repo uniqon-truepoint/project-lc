@@ -8,7 +8,6 @@ export * from './lib/constants/exchangeReturnCancelProcessDict';
 export * from './lib/constants/kkshowOrderStatuses';
 export * from './lib/constants/kkshowShoppingTabSectionLayout';
 export * from './lib/constants/koreaProvinces';
-
 export * from './lib/constants/liveShoppingProgress';
 export * from './lib/constants/nextpageParamKey';
 export * from './lib/constants/orderProcessStepDict';
@@ -109,6 +108,7 @@ export * from './lib/dto/post.dto';
 export * from './lib/dto/privacyApproachDto.dto';
 export * from './lib/dto/productPromotion.dto';
 export * from './lib/dto/promotionPageRanking.dto';
+export * from './lib/dto/purchaseMessage.dto';
 export * from './lib/dto/refund.dto';
 export * from './lib/dto/registGoods.dto';
 export * from './lib/dto/return.dto';

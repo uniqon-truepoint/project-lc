@@ -1,4 +1,5 @@
-FROM node:14
+FROM node:18
+WORKDIR /app
 
 ENV NODE_ENV production
 # timezone 설정

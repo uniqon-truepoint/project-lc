@@ -293,6 +293,8 @@ export class LCProdAppStack extends Stack {
         AWS_S3_ACCESS_KEY_ID: Secret.fromSsmParameter(p.S3_ACCESS_KEY_ID),
         AWS_S3_ACCESS_KEY_SECRET: Secret.fromSsmParameter(p.S3_ACCESS_KEY_SECRET),
         CACHE_REDIS_URL: Secret.fromSsmParameter(p.CACHE_REDIS_URL_KEY),
+        MQ_REDIS_URL: Secret.fromSsmParameter(p.MQ_REDIS_URL_KEY),
+        SERVER_API_KEY: Secret.fromSsmParameter(p.SERVER_API_KEY_KEY),
       },
       environment: {
         S3_BUCKET_NAME: 'lc-project',
@@ -545,6 +547,7 @@ export class LCProdAppStack extends Stack {
       CACHE_REDIS_URL_KEY: __loadSsmParmeter(c.CACHE_REDIS_URL_KEY),
       MQ_REDIS_URL_KEY: __loadSsmParmeter(c.MQ_REDIS_URL_KEY),
       TOSS_PAYMENTS_SECRET_KEY: __loadSsmParmeter(c.TOSS_PAYMENTS_SECRET_KEY),
+      SERVER_API_KEY_KEY: __loadSsmParmeter(c.SERVER_API_KEY_KEY),
     };
   }
 }

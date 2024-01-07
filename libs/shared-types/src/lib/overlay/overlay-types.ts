@@ -50,7 +50,7 @@ export interface PurchaseMessage {
   /** 응원메세지 */
   message: string;
   /** 1/2단계 구분 */
-  level: string;
+  level?: string;
   /** 구매자 닉네임 */
   nickname: string;
   /** 구매물품 이름 */

@@ -2,6 +2,7 @@ export * from './adapters/redis.adapter';
 export * from './classes/image-resizer.class';
 export * from './classes/service-base-cache.class';
 export * from './classes/user-pw-manager.class';
+export * from './constants/api-key';
 export * as authConstants from './constants/auth';
 export * from './constants/csrf-free-routes';
 export * from './decorators/broadcasterInfo.decorator';

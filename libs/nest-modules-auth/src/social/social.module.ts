@@ -15,7 +15,7 @@ import { NaverStrategy } from './strategy/naver.strategy';
 
 @Module({
   imports: [
-    AuthModule,
+    AuthModule.withoutControllers(),
     BroadcasterModule.withoutControllers(),
     SellerModule.withoutControllers(),
     CustomerModule.withoutControllers(),

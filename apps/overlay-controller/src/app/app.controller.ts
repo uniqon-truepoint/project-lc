@@ -10,6 +10,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
 import { LiveShoppingMessageSetting, OverlayTheme } from '@prisma/client';
 import { AdminGuard, JwtAuthGuard } from '@project-lc/nest-modules-authguard';
 import {
@@ -32,6 +33,7 @@ import {
 } from '@project-lc/utils';
 import { ViewAuthFilter } from './forbidden.exception';
 
+@ApiExcludeController()
 @Controller()
 export class AppController {
   constructor(

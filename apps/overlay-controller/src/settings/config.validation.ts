@@ -10,4 +10,6 @@ export const validationSchema = Joi.object({
   OVERLAY_CONTROLLER_HOST: Joi.string().required(),
   // S3 버킷
   S3_BUCKET_NAME: Joi.string().required(),
+  // 2024-01-06 APIKEY
+  SERVER_API_KEY: Joi.string().optional(),
 });

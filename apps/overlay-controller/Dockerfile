@@ -1,4 +1,5 @@
-FROM node:14
+FROM node:18
+WORKDIR /app
 
 RUN apt-get update
 RUN apt-get install -y openssl

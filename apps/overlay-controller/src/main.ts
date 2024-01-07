@@ -15,6 +15,7 @@ async function bootstrap(): Promise<void> {
 
   const appSetting = new AppSetting(app);
   appSetting.initialize();
+  appSetting.setSwaggerDocument();
 
   const port = process.env.PORT || 3333;
   await app.listen(port, () => {
